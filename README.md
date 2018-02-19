@@ -1,4 +1,4 @@
-# Schrodinger_solver
+# 1D Schrodinger solver
 Numerical solution of Schrodinger equation
 
 based on the following paper:
