@@ -6,7 +6,14 @@ from time import time
 
 from Schrodinger_plot import *
 
-def harmonic_potential(x, x0):
+def ceo_dopping(x,x0,mag,width):
+    ceo_pot = mag/width*x-mag*(1+x0/width)
+    for i in range(len(ceo_pot)):
+        if ceo_pot[i]>0 or ceo_pot[i]<-mag:
+            ceo_pot[i]= 0
+    return ceo_pot
+
+def harmonic_potential(x,x0):
     # get well force constant and depth
     omega = 1
     D = 0
@@ -18,14 +25,14 @@ def diagonalize_hamiltonian(Hamiltonian):
 
 def find_E(xvec,x0,steps,h,hbar,m,Binv):
     # create the potential from harmonic potential function
-    U=harmonic_potential(xvec, x0)
+    U=harmonic_potential(xvec, x0)+ceo_dopping(xvec, -10.0, 30.0, 2.0)
     # create Laplacian via 3-point finite-difference method
     Laplacian=(-2.0*np.diag(np.ones(steps))+np.diag(np.ones(steps-1),1)\
         +np.diag(np.ones(steps-1),-1))/(float)(h**2)
     # create the Hamiltonian
     Hamiltonian=np.zeros((steps,steps))
-    [i,j]=np.indices(Hamiltonian.shape)
-    Hamiltonian[i==j]=U
+    [im,jm]=np.indices(Hamiltonian.shape)
+    Hamiltonian[im==jm]=U
     Hamiltonian+=(-0.5)*((hbar**2)/m)*Binv.dot(Laplacian)
     # diagonalize the Hamiltonian yielding the wavefunctions and energies
     E,V=diagonalize_hamiltonian(Hamiltonian)
@@ -50,18 +57,18 @@ B = (10.0*np.diag(np.ones(steps))+np.diag(np.ones(steps-1),1)\
     +np.diag(np.ones(steps-1),-1))/(float)(12.0)
 Binv = spla.inv(B)
 
-x0 = 0
-E,V,U = find_E(xvec,x0,steps,h,hbar,m,Binv)
+#x0 = 0
+#E,V,U = find_E(xvec,x0,steps,h,hbar,m,Binv)
 
 n=30
 # print output
-output(E,n)
+#output(E,n)
 # create plot
 #finite_well_plot(E,V,xvec,steps,n,U)
 
 t0 = time()
-nx0 = 150
-x0vec=np.linspace(-17,0,nx0)
+nx0 = 450
+x0vec=np.linspace(-25,0,nx0)
 Eall = np.zeros((steps,nx0))
 for i in range(len(x0vec)):
     x0 = x0vec[i]
@@ -74,4 +81,6 @@ ax=f.add_subplot(111)
 for i in range(0,n):
     color=mpl.cm.jet_r((i)/(float)(n),1)
     ax.plot(x0vec,Eall[i,:],c=color)
+plt.xlim(-18.0,0.0)
+plt.ylim(-5.0,30.0)
 plt.show()

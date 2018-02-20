@@ -51,18 +51,20 @@ n = 30
 #E,V,U = find_E(xvec,x0,steps,h,hbar,m)
 
 t0 = time()
-x0vec=np.linspace(-25,0,50)
-E0 = np.zeros((steps,50))
+nx0 = 150
+x0vec=np.linspace(-17,0,nx0)
+Eall = np.zeros((steps,nx0))
 for i in range(len(x0vec)):
     x0 = x0vec[i]
     Evec,Vvec,Uvec = find_E(xvec,x0,steps,h,hbar,m)
-    E0[:,i]=Evec[:]
+    Eall[:,i]=Evec[:]
 print('Calculation time:',round(time()-t0,3),'s')
 
 f = plt.figure()
 ax=f.add_subplot(111)
 for i in range(0,n):
-    ax.plot(x0vec,E0[i,:],c='lightslategray')
+    color=mpl.cm.jet_r((i)/(float)(n),1)
+    ax.plot(x0vec,Eall[i,:],c=color)
 plt.show()
 
 # print output
