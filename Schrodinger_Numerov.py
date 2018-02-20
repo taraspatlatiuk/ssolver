@@ -68,7 +68,7 @@ n=30
 
 t0 = time()
 nx0 = 450
-x0vec=np.linspace(-25,0,nx0)
+x0vec=np.linspace(-20,5,nx0)
 Eall = np.zeros((steps,nx0))
 for i in range(len(x0vec)):
     x0 = x0vec[i]
@@ -81,6 +81,6 @@ ax=f.add_subplot(111)
 for i in range(0,n):
     color=mpl.cm.jet_r((i)/(float)(n),1)
     ax.plot(x0vec,Eall[i,:],c=color)
-plt.xlim(-18.0,0.0)
-plt.ylim(-5.0,30.0)
+plt.xlim(-20.0,5.0)
+plt.ylim(-15.0,30.0)
 plt.show()
