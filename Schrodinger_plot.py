@@ -107,3 +107,22 @@ def output(E,n):
         print('E({})='.format(i),str(E[i]))
         #print_center_text('E({})='.format(i)+str(E[i]))
     print("")
+
+def plot_Psi(x0vec,xvec,psiall,mode):
+    y,x = np.meshgrid(x0vec,xvec)
+    plt.figure()
+    plt.subplot(111)
+    #pax.plot(xvec,psi0)
+    plt.pcolor(x,y,psiall[:,mode,:])#,vmin=0, vmax=1.1)
+    plt.colorbar()
+    plt.show()
+
+def plot_E(x0vec,Eall,n):
+    f = plt.figure()
+    ax=f.add_subplot(111)
+    for i in range(0,n):
+        color=mpl.cm.jet_r((i)/(float)(n),1)
+        ax.plot(x0vec,Eall[i,:],c=color)
+    plt.xlim(-20.0,5.0)
+    plt.ylim(-20.0,30.0)
+    plt.show()

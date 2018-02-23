@@ -39,48 +39,79 @@ def find_E(xvec,x0,steps,h,hbar,m,Binv):
     # determine theoretical number of energy levels (n)
     return (E,V,U)
 
-steps=1000
-# atomic units
-hbar=1.0
-m=1.0
-# divide by two so a well from -W to W is of input width
-W=20
-# set length variable for xvec
-A=W/2.0
-# create x-vector from -A to A
-xvec=np.linspace(-A,A,steps)
-# get step size
-h=xvec[1]-xvec[0]
+def cakc_E_psi(nx0):
+    steps=1000
+    hbar=1.0
+    m=1.0
+    W=20
+    A=W/2.0
+    xvec=np.linspace(-A,A,steps)
+    # get step size
+    h=xvec[1]-xvec[0]
 
-# B matrix - to convert Numerov equation into eigenvalue problem
-B = (10.0*np.diag(np.ones(steps))+np.diag(np.ones(steps-1),1)\
-    +np.diag(np.ones(steps-1),-1))/(float)(12.0)
-Binv = spla.inv(B)
+    # B matrix - to convert Numerov equation into eigenvalue problem
+    B = (10.0*np.diag(np.ones(steps))+np.diag(np.ones(steps-1),1)\
+        +np.diag(np.ones(steps-1),-1))/(float)(12.0)
+    Binv = spla.inv(B)
 
-#x0 = 0
-#E,V,U = find_E(xvec,x0,steps,h,hbar,m,Binv)
+    #x0 = 0
+    #E,V,U = find_E(xvec,x0,steps,h,hbar,m,Binv)
 
-n=30
-# print output
-#output(E,n)
-# create plot
-#finite_well_plot(E,V,xvec,steps,n,U)
+    # print output
+    #output(E,n)
+    # create plot
+    #finite_well_plot(E,V,xvec,steps,n,U)
 
-t0 = time()
-nx0 = 450
-x0vec=np.linspace(-20,5,nx0)
-Eall = np.zeros((steps,nx0))
-for i in range(len(x0vec)):
-    x0 = x0vec[i]
-    Evec,Vvec,Uvec = find_E(xvec,x0,steps,h,hbar,m,Binv)
-    Eall[:,i]=Evec[:]
-print('Calculation time:',round(time()-t0,3),'s')
+    t0 = time()
+    x0vec=np.linspace(-20,5,nx0)
+    Eall = np.zeros((steps,nx0))
 
-f = plt.figure()
-ax=f.add_subplot(111)
-for i in range(0,n):
-    color=mpl.cm.jet_r((i)/(float)(n),1)
-    ax.plot(x0vec,Eall[i,:],c=color)
-plt.xlim(-20.0,5.0)
-plt.ylim(-15.0,30.0)
-plt.show()
+    psiall = np.zeros((len(xvec),steps,len(x0vec)))
+    for i in range(len(x0vec)):
+        x0 = x0vec[i]
+        Evec,Vvec,Uvec = find_E(xvec,x0,steps,h,hbar,m,Binv)
+        psiall[:,:,i] = Vvec[:,:]**2
+        Eall[:,i]=Evec[:]
+    print('Calculation time:',round(time()-t0,3),'s')
+
+    return (Eall,psiall,xvec,x0vec)
+
+#def density(Eall, psiall, xvec, x0vec):
+
+# number of modes = 5
+xvec = np.linspace(-2,2,20)
+x0vec = np.linspace(-1,1,10)
+Eall = np.zeros((5,10))
+psiall = np.zeros((5,20,10))
+
+for i, x in enumerate(x0vec):
+    Eall[:,i] = x0vec**2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a = 1
