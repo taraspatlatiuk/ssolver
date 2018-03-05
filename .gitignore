@@ -1,0 +1,6 @@
+*.pyc
+*.so
+*.png
+*.pdf
+*.eps
+.python-version
