@@ -1,11 +1,19 @@
 # 1D Schrodinger solver
 Numerical solution of Schrodinger equation
 
-based on the following paper:
-<br>https://pubs.acs.org/doi/pdf/10.1021/acs.jchemed.7b00003
+## Install the packages
+Use the following command to install all dependencies
+```bash
+pip install -r requirements.txt
 
-To get the energies and wavefunction for the harmonic potential use:
-<br>https://github.com/AlexAline/Schrodinger_solver/blob/master/Schrodinger.py
+```
 
-Python implementation of Numerov method to solve 1D Schrodinger equation is in the file:
-<br>https://github.com/AlexAline/Schrodinger_solver/blob/master/Schrodinger_Numerov.py
+## Run the analysis
+In the project folder run
+```bash
+python numerov
+```
+
+## Sources
+Based on the following [paper](https://pubs.acs.org/doi/pdf/10.1021/acs.jchemed.7b00003)
+
