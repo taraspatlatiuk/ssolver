@@ -3,38 +3,50 @@ import scipy.linalg as spla
 import matplotlib.pyplot as plt
 from time import time
 
-# from Schrodinger_plot import *
+# NB: That's how one can separate physical model from 
+# parameters of the algorithm
+class CeoPotential:
+    def __init__(self, omega=1, d=0, mag=30.0, width=2.0):
+        self.omega = omega
+        self.width = width
+        self.mag = mag
+        self.d = d
 
-def ceo_dopping(x,x0,mag,width):
-    ceo_pot = mag/width*x-mag*(1+x0/width)
-    for i in range(len(ceo_pot)):
-        if ceo_pot[i]>0 or ceo_pot[i]<-mag:
-            ceo_pot[i]= 0
-    return ceo_pot
+    def _ceo_dopping(self, x, x0):
+        ceo_pot = self.mag / self.width * x - self.mag * (1 + x0 / self.width)
+        ceo_pot[(ceo_pot > 0) | (ceo_pot < -self.mag)] = 0
+        return ceo_pot
 
-def harmonic_potential(x,x0):
-    # get well force constant and depth
-    omega = 1
-    D = 0
-    pot=(0.5*(omega**2)*((x-x0)**2))+D
-    return pot
+    def _harmonic(self, x, x0):
+        return 0.5 * self.omega**2 * (x - x0)**2 + self.d
+
+    def evaluate(self, x, x0):
+        return self._harmonic(x, x0) + self._ceo_dopping(x, -10) 
+
 
 def diagonalize_hamiltonian(Hamiltonian):
     return spla.eigh(Hamiltonian)
 
-def find_E(xvec,x0,steps,h,hbar,m,Binv):
-    # create the potential from harmonic potential function
-    U=harmonic_potential(xvec, x0)+ceo_dopping(xvec, -10.0, 30.0, 2.0)
+# TODO: Move find_E to separate class
+#
+def find_E(potential, xvec, x0, steps, h, hbar, m, Binv):
+    # create the potential 
+    U = potential.evaluate(xvec, x0)
+
     # create Laplacian via 3-point finite-difference method
-    Laplacian=(-2.0*np.diag(np.ones(steps))+np.diag(np.ones(steps-1),1)\
-        +np.diag(np.ones(steps-1),-1))/(float)(h**2)
+    Laplacian=(-2.0 
+        * np.diag(np.ones(steps))
+        + np.diag(np.ones(steps - 1), 1)
+        + np.diag(np.ones(steps - 1), -1)
+    ) / float(h**2)
+
     # create the Hamiltonian
     Hamiltonian=np.zeros((steps,steps))
     [im,jm]=np.indices(Hamiltonian.shape)
     Hamiltonian[im==jm]=U
-    Hamiltonian+=(-0.5)*((hbar**2)/m)*Binv.dot(Laplacian)
+    Hamiltonian += -0.5 * (hbar**2) / m * Binv.dot(Laplacian)
     # diagonalize the Hamiltonian yielding the wavefunctions and energies
-    E,V=diagonalize_hamiltonian(Hamiltonian)
+    E, V = diagonalize_hamiltonian(Hamiltonian)
     # determine theoretical number of energy levels (n)
     return (E,V,U)
 
@@ -49,10 +61,11 @@ def calculate_energy_psi(nx0):
     h = xvec[1]-xvec[0]
 
     # B matrix - to convert Numerov equation into eigenvalue problem
-    Bmatrix = (10.0 * np.diag(np.ones(steps))
+    Bmatrix = (10.0 
+        * np.diag(np.ones(steps))
         + np.diag(np.ones(steps-1), 1)
         + np.diag(np.ones(steps-1), -1)
-    )/(float)(12.0)
+    ) / float(12.0)
 
     Binv = spla.inv(Bmatrix)
 
@@ -69,11 +82,12 @@ def calculate_energy_psi(nx0):
     Eall = np.zeros((steps,nx0))
 
     psiall = np.zeros((len(xvec),steps,len(x0vec)))
+    potential = CeoPotential()
     for i in range(len(x0vec)):
         x0 = x0vec[i]
-        Evec,Vvec,Uvec = find_E(xvec,x0,steps,h,hbar,m,Binv)
+        Evec,Vvec,Uvec = find_E(potential, xvec, x0, steps, h, hbar,m,Binv)
         psiall[:,:,i] = Vvec[:,:]**2
-        Eall[:,i]=Evec[:]
+        Eall[:,i] = Evec[:]
     print('Calculation time: {0:.3f}'.format(time() - t0), 's')
 
     return Eall, psiall, xvec, x0vec
