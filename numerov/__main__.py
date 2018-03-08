@@ -1,4 +1,4 @@
-from Schrodinger_Numerov import calculate_energy_psi 
+from ceo import calculate_energy_psi 
 
 
 def main():
