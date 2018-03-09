@@ -6,12 +6,14 @@ Use the following command to install all dependencies
 ```bash
 pip install -r requirements.txt
 
+# Check the code
+make test
 ```
 
 ## Run the analysis
 In the project folder run
 ```bash
-python numerov
+make
 ```
 
 ## Sources
