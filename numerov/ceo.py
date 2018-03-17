@@ -1,7 +1,8 @@
 import numpy as np
 import scipy.linalg as spla
 import matplotlib.pyplot as plt
-from numerov.timer import Timer
+#from numerov.timer import Timer
+from timer import Timer
 
 # NB: That's how one can separate physical model from
 # parameters of the algorithm
@@ -25,7 +26,7 @@ class CeoPotential:
         return 0.5 * self.omega**2 * (x - x0)**2 + self.d
 
     def potential(self, x, x0):
-        return self._harmonic(x, x0) + self._ceo_dopping(x, -10)
+        return self._harmonic(x, x0)# + self._ceo_dopping(x, -10)
 
 
 def diagonalize_hamiltonian(Hamiltonian):
@@ -62,9 +63,7 @@ class Solver:
         E, V = diagonalize_hamiltonian(hamiltonian)
         return E, V, U
 
-    def evaluate(self, nx0, nsteps, xvec):
-        # Shouldn't we control only step size or nnsteps?
-        x0vec = np.linspace(-20, 5, nx0)
+    def evaluate_x0(self, nx0, x0vec, nsteps, xvec):
         Eall = np.zeros((nsteps, nx0))
         psiall = np.zeros((nsteps, nsteps, nx0))
         # TODO: use meaningful names here
@@ -74,11 +73,23 @@ class Solver:
             Eall[:,i] = Evec[:]
         return Eall, psiall, xvec, x0vec
 
-def calculate_energy_psi(nx0, nsteps=1000, w=20.):
-    xvec = np.linspace(-w / 2, w / 2, nsteps)
-    # get step size
-    stepsize = xvec[1] - xvec[0]
+def calculate_energy_psi(x0, nsteps=1000, x_min=-10., x_max=10.):
+    # to calculate energies and wave functions for one specific x0
+    dx = (x_max - x_min)/nsteps
+    xvec = np.linspace(x_min+dx, x_max-dx, nsteps-1)
+    #print(xvec)
+
     with Timer("Computation time"):
-        solver = Solver(CeoPotential(), nsteps, stepsize)
-        eall, psiall, xvec, x0vec = solver.evaluate(nx0, nsteps, xvec)
+        solver = Solver(CeoPotential(), nsteps-1, dx)
+        eall, psiall, xvec = solver._evaluate(xvec, x0)
+    return eall, psiall, xvec
+
+def calculate_energy_psi_x0(nx0=40, x0_min=-20., x0_max=20., nsteps=1000, x_min=-10., x_max=10.):
+    # to calculate energies and wave functions for all x0 in the range x0_min to x0_max
+    dx = (x_max - x_min)/nsteps
+    xvec = np.linspace(x_min+dx, x_max-dx, nsteps-1)
+    x0vec = np.linspace(x0_min, x0_max, nx0)
+    with Timer("Computation time"):
+        solver = Solver(CeoPotential(), nsteps-1, dx)
+        eall, psiall, xvec, x0vec = solver.evaluate_x0(nx0, x0vec, nsteps-1, xvec)
     return eall, psiall, xvec, x0vec

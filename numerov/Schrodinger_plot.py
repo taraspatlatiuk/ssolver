@@ -123,6 +123,6 @@ def plot_E(x0vec,Eall,n):
     for i in range(0,n):
         color=mpl.cm.jet_r((i)/(float)(n),1)
         ax.plot(x0vec,Eall[i,:],c=color)
-    plt.xlim(-20.0,5.0)
-    plt.ylim(-20.0,30.0)
+    #plt.xlim(-20.0,5.0)
+    #plt.ylim(-20.0,30.0)
     plt.show()
