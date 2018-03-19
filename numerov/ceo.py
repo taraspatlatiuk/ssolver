@@ -93,3 +93,14 @@ def calculate_energy_psi_x0(nx0=40, x0_min=-20., x0_max=20., nsteps=1000, x_min=
         solver = Solver(CeoPotential(), nsteps-1, dx)
         eall, psiall, xvec, x0vec = solver.evaluate_x0(nx0, x0vec, nsteps-1, xvec)
     return eall, psiall, xvec, x0vec
+
+def calculate_density(eall, psiall, E_fermi):
+    # eall: index 0 - mode number, index 1 - x0 value
+    # psiall: index 0 - x coordinate, index 1 - mode number, index 2 - x0 value
+    mask_3D = np.zeros(psiall.shape, dtype=bool)
+    mask_3D[:,:,:] = eall[np.newaxis,:,:]>E_fermi
+    psiall_f = np.copy(psiall)
+    psiall_f[mask_3D] = 0
+    density = np.sum(psiall_f,axis=(2))
+    total_density = np.sum(density,axis=(1))
+    return density, total_density

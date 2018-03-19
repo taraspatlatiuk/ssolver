@@ -126,3 +126,17 @@ def plot_E(x0vec,Eall,n):
     #plt.xlim(-20.0,5.0)
     #plt.ylim(-20.0,30.0)
     plt.show()
+
+def plot_1D(xvec, yvec):
+    f = plt.figure()
+    ax=f.add_subplot(111)
+    ax.plot(xvec,yvec)
+    plt.show()
+
+def plot_2D(xvec, yvec, Zmat):
+    Y, X = np.meshgrid(yvec, xvec)
+    plt.figure()
+    plt.subplot(111)
+    plt.pcolor(X, Y, Zmat)
+    plt.colorbar()
+    plt.show()
