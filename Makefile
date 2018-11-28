@@ -1,7 +1,8 @@
 .PHONY: run test	
 
 run:
-	python numerov
+	python .
 
 test:
-	python -m unittest discover
+	pytest -s
+	

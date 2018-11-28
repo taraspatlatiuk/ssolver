@@ -1,8 +1,7 @@
 import numpy as np
 import scipy.linalg as spla
 import matplotlib.pyplot as plt
-#from numerov.timer import Timer
-from timer import Timer
+from numerov.timer import Timer
 
 # NB: That's how one can separate physical model from
 # parameters of the algorithm

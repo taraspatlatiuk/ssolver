@@ -1,11 +1,7 @@
-from ceo import calculate_energy_psi
-from ceo import calculate_energy_psi_x0
-from ceo import calculate_density
-from Schrodinger_plot import plot_E
-from Schrodinger_plot import plot_1D
-from Schrodinger_plot import plot_2D
+from numerov.ceo import calculate_energy_psi_x0
+from numerov.ceo import calculate_density
+from numerov.Schrodinger_plot import plot_1D
 
-import numpy as np
 
 def main():
     """
@@ -33,7 +29,8 @@ def main():
     density, total_density = calculate_density(Eall, psiall, E_fermi=5)
 
     plot_1D(xvec, total_density)
-    plot_1D(xvec, density[:,0])
+    plot_1D(xvec, density[:, 0])
+
 
 if __name__ == '__main__':
     main()
