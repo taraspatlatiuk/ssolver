@@ -1,3 +1,5 @@
+https://travis-ci.com/AlexAline/Schrodinger_solver.svg?branch=master
+
 # 1D Schrodinger solver
 Numerical solution of Schrodinger equation
 
