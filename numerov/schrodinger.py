@@ -1,8 +1,8 @@
 import numpy as np
 import scipy.linalg as spla
 
-from Schrodinger_plot import output
-from Schrodinger_plot import finite_well_plot
+from schrodinger_plot import output
+from schrodinger_plot import finite_well_plot
 
 
 def harmonic_potential(x):
